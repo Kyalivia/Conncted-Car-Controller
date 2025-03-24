@@ -7,7 +7,7 @@ extern uint8_t receivedTrack;
 extern uint8_t receivedNum;
 extern uint8_t stopTrack;
 extern uint8_t mp3StopFlag;
-
+extern UART_HandleTypeDef huart1;
 // Parse Command
 void parseCommand(char *rxBuffer) {
 		char module[4] = { 0 };  // 3 letters + null
@@ -24,11 +24,22 @@ void parseCommand(char *rxBuffer) {
     else if (strncmp(module, "MP3", 3) == 0) {
         handleMp3Command(value);
     }
+		else if (strncmp(module, "MP3", 3) == 0) {
+        handleTemperatureCommand();
+    }
     /*else if (strncmp(module, "NAV", 3) == 0) {
         handleNavCommand(value);
     }*/
 }
 
+void handleTemperatureCommand(void) {
+    int temperature = getTemperature();
+
+    char uartBuffer[32];
+		int len = snprintf(uartBuffer, sizeof(uartBuffer), "TEM:%d", temperature);
+
+    HAL_UART_Transmit(&huart1, (uint8_t*)uartBuffer, len, HAL_MAX_DELAY);
+}
 
 // Fan Control Command
 void handleFanCommand(char val) {
@@ -44,6 +55,7 @@ void handleFanCommand(char val) {
         break;
     case 'b':
         fanSet(2);
+				break;
     case 'c':
         fanSet(3);
         break;
