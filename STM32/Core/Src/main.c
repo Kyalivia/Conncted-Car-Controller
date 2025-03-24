@@ -128,7 +128,7 @@ int main(void)
 	///////important init()
 	lcdSetCursor(0, 0);
 	lcdSendString("Hello World!");
-	*/
+	
 	
 	// command test
 	// HAL_UART_Receive_IT(&huart1, (uint8_t*)rxBuffer, 5);

@@ -56,10 +56,10 @@ void handleMp3Command(char val) {
     case '1': // Start Current Track
         mp3Play(currentTrack);
         break;
-    case '0': // Stop(when mp3Stop flag is false)
-				if (mp3stopFlag == 0) {
-            mp3Stop();
-        }
+    //case '0': // Stop(when mp3Stop flag is false)
+			//	if (mp3stopFlag == 0) {
+       //     mp3Stop();
+       // }
         break;
     case 'r': // Play Random Track
         currentTrack = mp3GetRandomTrack();
