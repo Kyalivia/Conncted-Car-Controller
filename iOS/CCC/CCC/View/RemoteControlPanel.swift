@@ -27,8 +27,7 @@ struct RemoteControlPanel: View {
                     case 0:
                         LEDView()
                     case 1:
-                        Text("온습도 센서 뷰")
-                            .foregroundColor(.white)
+                        FanView()
                     case 2:
                         Text("팬 제어 뷰")
                             .foregroundColor(.white)

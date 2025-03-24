@@ -26,11 +26,11 @@ class LEDViewModel: ObservableObject {
     func toggleLED() {
         isLEDOn = isLEDOn ? false : true
         let command = isLEDOn ? "LED:0" : "LED:1"
-        bluetoothService.sendLEDCommand(command)
+        bluetoothService.sendCommand(command: command, characteristicUUID: Constants.ledUUID)
     }
 
     // LED 상태 요청
     func refreshLEDStatus() {
-        bluetoothService.sendLEDCommand("LED:2")
+        bluetoothService.sendCommand(command: "LED:2", characteristicUUID: Constants.ledUUID)
     }
 }
