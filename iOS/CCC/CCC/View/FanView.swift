@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct FanView: View {
-    @StateObject private var viewModel = FanViewModel()
-    
+    @ObservedObject var viewModel: FanViewModel
     var body: some View {
         VStack(spacing: 30) {
             
@@ -14,7 +13,7 @@ struct FanView: View {
                 .foregroundColor(.white)
             
             Slider(value: $viewModel.sliderValue, in: 0...3, step: 1)
-                .accentColor(.blue)
+                .accentColor(.cyan)
                 .onChange(of: viewModel.sliderValue) {
                     viewModel.setFanLevelFromSlider(Int(viewModel.sliderValue))
                 }
@@ -25,4 +24,3 @@ struct FanView: View {
         .padding()
     }
 }
-
