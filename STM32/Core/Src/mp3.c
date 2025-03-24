@@ -11,6 +11,7 @@ extern uint8_t currentTrack;
 extern uint8_t receivedTrack;
 extern uint8_t receivedNum;
 extern uint8_t stopTrack;
+extern uint8_t mp3StopFlag;
 
 // Send Command to DFPlayer Mini 
 void mp3SendCommand(uint8_t cmd, uint8_t param1, uint8_t param2) {
@@ -25,27 +26,57 @@ void mp3SendCommand(uint8_t cmd, uint8_t param1, uint8_t param2) {
 
 // Play MP3 track 
 void mp3Play(uint8_t trackNum) {
-		// lcdClearDisplay();
+	lcdClearDisplay();
+	if (mp3StopFlag == 0) { // Normal Case
 		if (trackNum >= 1 && trackNum <= 8) {
 			currentTrack = trackNum;
 			mp3SendCommand(0x03, 0x00, currentTrack);
-		
-			lcdSetCursor(0,0); // Line 1
+
+			lcdSetCursor(0, 0); // Line 1
 			char buffer1[16];
 			sprintf(buffer1, "Music Track: %d", currentTrack);
 			lcdSendString(buffer1);
-		
-			lcdSetCursor(1,0); // Line 2
+
+			lcdSetCursor(1, 0); // Line 2
 			char buffer2[16];
 			sprintf(buffer2, "Volume: %d", currentVolume);
 			lcdSendString(buffer2);
 		}
 		else {
-			lcdSetCursor(0,0); // Line 1
+			lcdSetCursor(0, 0); // Line 1
 			char buffer[16];
 			sprintf(buffer, "Invalid Track");
 			lcdSendString(buffer);
 		}
+	}
+	else { // If Music is Already Stopped
+		currentTrack = stopTrack;
+		mp3SendCommand(0x03, 0x00, currentTrack);
+		mp3StopFlag = 0;
+
+		lcdSetCursor(0, 0); // Line 1
+		char buffer1[16];
+		sprintf(buffer1, "Resume Track: %d", currentTrack);
+		lcdSendString(buffer1);
+
+		lcdSetCursor(1, 0); // Line 2
+		char buffer2[16];
+		sprintf(buffer2, "Volume: %d", currentVolume);
+		lcdSendString(buffer2);
+	}
+}
+
+// Stop Playing mp3
+void mp3Stop(void) {
+	stopTrack = currentTrack;
+	mp3StopFlag = 1;
+	mp3SendCommand(0x16, 0x00, 0x00);  // Stop
+
+	lcdClearDisplay();
+	lcdSetCursor(0, 0); // Line 1
+	char buffer1[16];
+	sprintf(buffer1, "Music Stop");
+	lcdSendString(buffer1);
 }
 
 // Volume Set (0 ~ 30)
@@ -105,33 +136,13 @@ void mp3DfplayerInit(void) {
   mp3SetVolume(15);
 }
 
-// Stop Playing mp3
-void mp3Stop(void) {
-	stopTrack = currentTrack;
-  mp3SendCommand(0x16, 0x00, 0x00);  // Stop
-	
-	lcdClearDisplay();
-	lcdSetCursor(0,0); // Line 1
-	char buffer1[16];
-	sprintf(buffer1, "Music Stop");
-	lcdSendString(buffer1);
-}
-
-// Resume Playing mp3
-void mp3Resume(void) {
-  mp3SendCommand(0x0D, 0x00, 0x00);  // Resume
-	
-	lcdClearDisplay();
-	lcdSetCursor(0,0); // Line 1
-	char buffer1[16];
-	sprintf(buffer1, "Resume");
-	lcdSendString(buffer1);
-}
-
 // Play Next Track
 void mp3Next(void) {
 	if (currentTrack < 8) {
 		mp3Play(currentTrack + 1);
+	}
+	else if (currentTrack == 8) {
+		mp3Play(1);
 	}
 }
 
@@ -139,6 +150,9 @@ void mp3Next(void) {
 void mp3Previous(void) {
   if (currentTrack > 1) {
 		mp3Play(currentTrack - 1);
+	}
+	else if (currentTrack == 1) {
+		mp3Play(8);
 	}
 }
 
