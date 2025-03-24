@@ -38,6 +38,7 @@ extern "C" {
 #include "callback.h"
 #include "command.h"
 
+#include "temperature.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
