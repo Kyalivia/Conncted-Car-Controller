@@ -95,9 +95,9 @@ int main(void)
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
-
+	
   /* USER CODE BEGIN Init */
-
+	
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -118,10 +118,14 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 	// lcd timer
+	//temp timer DO not change this
 	HAL_TIM_Base_Start(&htim6);
-	// lcd test code
-	/*
+	HAL_TIM_Base_Start_IT(&htim7);
+	/////////////////////////////////
+	fanInit();
 	lcdInit();
+	temperatureInit(&hadc);
+	///////important init()
 	lcdSetCursor(0, 0);
 	lcdSendString("Hello World!");
 	*/
@@ -148,6 +152,17 @@ int main(void)
 		isConnect = 0;
 		HAL_UART_Receive_IT(&huart1, (uint8_t*)rxBuffer, 5);
 		*/
+		temperatureProcess();// this is important
+		
+		//example of temperature
+		if (temp_ready)
+        {
+            temp_ready = 0;
+            lcdClearDisplay();
+            lcdSetCursor(0, 0);
+            lcdSendString("TEMP READY");
+            Printing_t((int)latest_temperature);
+        }
   }
   /* USER CODE END 3 */
 }
