@@ -439,6 +439,11 @@
               <FileType>1</FileType>
               <FilePath>..\Core\Src\delay.c</FilePath>
             </File>
+            <File>
+              <FileName>command.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\command.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

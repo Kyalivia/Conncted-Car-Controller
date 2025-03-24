@@ -7,6 +7,7 @@
 #include <string.h>
 #include "fan.h"
 #include "mp3.h"
+#include "temperature.h"
 // #include "navigation.h"
 
 

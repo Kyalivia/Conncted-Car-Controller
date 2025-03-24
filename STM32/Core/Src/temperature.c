@@ -68,3 +68,7 @@ void Printing_t(int fan_count)
     sprintf(buffer, "Temperture: %d", fan_count);
     lcdSendString(buffer);
 }
+int getTemperature(void)
+{
+    return latest_temperature;
+}
