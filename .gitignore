@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+
+# CubeMX generated project files
+*.ioc
+*.mxproject
+
+# Build output
+*.o
+*.d
+*.map
+*.lst
+*.elf
+*.hex
+*.bin
+*.axf
+*.crf
+*.lnp
+
+# STM32 CubeMX
+/STM32/Drivers/
+/STM32/FATFS/
+/MDK-ARM/
+/Middlewares/
