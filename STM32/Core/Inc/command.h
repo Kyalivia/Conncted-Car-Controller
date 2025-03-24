@@ -10,9 +10,9 @@
 // #include "navigation.h"
 
 
-void parseCommand(uint8_t *rxBuffer);
+void parseCommand(char *rxBuffer);
 void handleFanCommand(char val);
 void handleMp3Command(char val);
-void handleNavCommand(char val);
+// void handleNavCommand(char val);
 
 #endif 
