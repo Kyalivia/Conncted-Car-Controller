@@ -1,24 +1,17 @@
 #include "fan.h"
 
-// ? ??? (?? ??? ?? OFF)
-void fanInit(void) {
-		/*
-    HAL_GPIO_WritePin(FAN1_PORT, FAN1_PIN, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(FAN2_PORT, FAN2_PIN, GPIO_PIN_SET);
-    HAL_GPIO_WritePin(FAN3_PORT, FAN3_PIN, GPIO_PIN_SET);
-		*/
+void fanInit(void) 
+{
 		HAL_GPIO_WritePin(FAN1_GPIO_Port, FAN1_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(FAN2_GPIO_Port, FAN2_Pin, GPIO_PIN_SET);
     HAL_GPIO_WritePin(FAN3_GPIO_Port, FAN3_Pin, GPIO_PIN_SET);
-		
 }
 
-// ?? ? ON/OFF
-void fanControl(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, FanState state) {
+void fanControl(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, FanState state) 
+{
     HAL_GPIO_WritePin(GPIOx, GPIO_Pin, (state == FAN_ON) ? GPIO_PIN_RESET : GPIO_PIN_SET);
 }
 
-/*
 void fanStatusPrint(int fan_count)
 {
 	char buffer[16];
@@ -41,35 +34,20 @@ void fanStatusPrint(int fan_count)
 		lcdSendString("FAN OFF");		
 	}
 }
-*/
 
-// ? ??? ?? ?? (1?, 2?, 3?)
 void fanSet(uint8_t fan_count) {
-    // ?? ? OFF
     fanAll(FAN_OFF);
-		
-		/*
-    if (fan_count >= 1) fanControl(FAN1_PORT, FAN1_PIN, FAN_ON);
-    if (fan_count >= 2) fanControl(FAN2_PORT, FAN2_PIN, FAN_ON);
-    if (fan_count >= 3) fanControl(FAN3_PORT, FAN3_PIN, FAN_ON);
-		*/
 	
 		if (fan_count >= 1) fanControl(FAN1_GPIO_Port, FAN1_Pin, FAN_ON);
     if (fan_count >= 2) fanControl(FAN2_GPIO_Port, FAN2_Pin, FAN_ON);
     if (fan_count >= 3) fanControl(FAN3_GPIO_Port, FAN3_Pin, FAN_ON);
 	
-		//fanStatusPrint(fan_count);        
+		fanStatusPrint(fan_count);        
 }
 
-// ?? ? ON/OFF
-void fanAll(FanState state) {
-		/*
-    fanControl(FAN1_PORT, FAN1_PIN, state);
-    fanControl(FAN2_PORT, FAN2_PIN, state);
-    fanControl(FAN3_PORT, FAN3_PIN, state);
-		*/
+void fanAll(FanState state) 
+{
 		fanControl(FAN1_GPIO_Port, FAN1_Pin, state);
     fanControl(FAN2_GPIO_Port, FAN2_Pin, state);
     fanControl(FAN3_GPIO_Port, FAN3_Pin, state);
-		
 }

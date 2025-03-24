@@ -52,6 +52,10 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart4;
 
 /* USER CODE BEGIN PV */
+uint8_t currentVolume;
+uint8_t currentTrack;
+uint8_t receivedTrack;
+uint8_t stopTrack;
 
 /* USER CODE END PV */
 
@@ -110,6 +114,15 @@ int main(void)
   MX_SPI1_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
+	// lcd timer
+	HAL_TIM_Base_Start(&htim6);
+	// lcd test code
+	/*
+	lcdInit();
+	lcdSetCursor(0, 0);
+	lcdSendString("Hello World!");
+	*/
+
 
   /* USER CODE END 2 */
 
