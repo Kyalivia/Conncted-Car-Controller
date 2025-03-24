@@ -52,10 +52,13 @@ UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart4;
 
 /* USER CODE BEGIN PV */
+// mp3 varaible
 uint8_t currentVolume;
 uint8_t currentTrack;
 uint8_t receivedTrack;
 uint8_t stopTrack;
+// callback flag
+uint8_t isConnect;
 
 /* USER CODE END PV */
 
@@ -122,7 +125,9 @@ int main(void)
 	lcdSetCursor(0, 0);
 	lcdSendString("Hello World!");
 	*/
-
+	
+	// command test
+	// HAL_UART_Receive_IT(&huart1, (uint8_t*)rxBuffer, 5);
 
   /* USER CODE END 2 */
 
@@ -133,6 +138,16 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+		// command test
+		/*
+		if(isConnect) {
+			// check rxbuffer
+			if (strlen(rxbuffer) == 5)
+				parseCommand(rxbuffer);
+		}
+		isConnect = 0;
+		HAL_UART_Receive_IT(&huart1, (uint8_t*)rxBuffer, 5);
+		*/
   }
   /* USER CODE END 3 */
 }

@@ -35,6 +35,8 @@ extern "C" {
 #include "fan.h"
 #include "mp3.h"
 #include "lcd.h"
+#include "callback.h"
+#include "command.h"
 
 /* USER CODE END Includes */
 
