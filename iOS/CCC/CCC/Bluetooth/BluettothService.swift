@@ -64,27 +64,49 @@ final class BluetoothService: NSObject, ObservableObject {
         self.isConnected = false
     }
     
-    func sendLEDCommand(_ command: String) {
+//    func sendLEDCommand(_ command: String) {
+//        guard let peripheral = peripheral else {
+//            print("⚠️ peripheral이 nil 상태")
+//            return
+//        }
+//
+//        let data = command.data(using: .utf8)!
+//        let characteristicUUID = CBUUID(string: Constants.characteristicUUID)
+//        
+//        for service in peripheral.services ?? [] {
+//            for characteristic in service.characteristics ?? [] {
+//                if characteristic.uuid == characteristicUUID {
+//                    peripheral.writeValue(data, for: characteristic, type: .withResponse)
+//                    print("🟢 LED 제어 명령 전송: \(command)")
+//                    return
+//                }
+//            }
+//        }
+//        
+//        print("🚨 LED 특성 못 찾음")
+//    }
+    func sendCommand(command: String, characteristicUUID: String) {
         guard let peripheral = peripheral else {
             print("⚠️ peripheral이 nil 상태")
             return
         }
 
         let data = command.data(using: .utf8)!
-        let characteristicUUID = CBUUID(string: Constants.characteristicUUID)
-        
+        let uuid = CBUUID(string: characteristicUUID)
+
         for service in peripheral.services ?? [] {
             for characteristic in service.characteristics ?? [] {
-                if characteristic.uuid == characteristicUUID {
+                if characteristic.uuid == uuid {
                     peripheral.writeValue(data, for: characteristic, type: .withResponse)
-                    print("🟢 LED 제어 명령 전송: \(command)")
+                    print("🟢 명령 전송: \(command) to \(characteristicUUID)")
                     return
                 }
             }
         }
-        
-        print("🚨 LED 특성 못 찾음")
+
+        print("🚨 특성 \(characteristicUUID) 찾지 못함")
     }
+
 }
 
 
@@ -138,7 +160,7 @@ extension BluetoothService: CBPeripheralDelegate {
         
         for service in peripheral.services ?? [] {
             if service.uuid == CBUUID(string: Constants.serviceUUID) {
-                peripheral.discoverCharacteristics([CBUUID(string: Constants.characteristicUUID)], for: service)
+                peripheral.discoverCharacteristics([CBUUID(string: Constants.ledUUID)], for: service)
             }
         }
     }
@@ -150,9 +172,9 @@ extension BluetoothService: CBPeripheralDelegate {
         }
 
         for characteristic in service.characteristics ?? [] {
-            if characteristic.uuid == CBUUID(string: Constants.characteristicUUID) {
+            if characteristic.uuid == CBUUID(string: Constants.ledUUID) {
                 peripheral.setNotifyValue(true, for: characteristic)
-                print("✅ LED Notify 등록 완료")
+                print("✅ \(Constants.ledUUID) Notify 등록 완료")
             }
         }
     }
