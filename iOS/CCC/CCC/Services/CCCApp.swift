@@ -8,10 +8,10 @@
 import SwiftUI
 
 @main
-struct CCCApp: App {
+struct MainView: App {
     var body: some Scene {
         WindowGroup {
-            MainView()
+            ContentView()
         }
     }
 }

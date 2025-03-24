@@ -31,14 +31,7 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "gpio.h"
-#include "fan.h"
-#include "mp3.h"
-#include "lcd.h"
-#include "callback.h"
-#include "command.h"
 
-#include "temperature.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -64,7 +57,6 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-/*
 #define MCO_Pin GPIO_PIN_0
 #define MCO_GPIO_Port GPIOH
 #define LD2_Pin GPIO_PIN_5
@@ -91,9 +83,6 @@ void Error_Handler(void);
 #define D4_1602_GPIO_Port GPIOB
 #define EN_1602_Pin GPIO_PIN_6
 #define EN_1602_GPIO_Port GPIOB
-#define SD_CS_Pin GPIO_PIN_9
-#define SD_CS_GPIO_Port GPIOB
-*/
 
 /* USER CODE BEGIN Private defines */
 
