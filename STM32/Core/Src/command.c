@@ -24,6 +24,9 @@ void parseCommand(char *rxBuffer) {
     else if (strncmp(module, "MP3", 3) == 0) {
         handleMp3Command(value);
     }
+		else if (strncmp(module, "MP3", 3) == 0) {
+        handleTemperatureCommand();
+    }
     /*else if (strncmp(module, "NAV", 3) == 0) {
         handleNavCommand(value);
     }*/
