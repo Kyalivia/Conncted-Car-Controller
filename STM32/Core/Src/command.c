@@ -6,9 +6,10 @@ extern uint8_t currentTrack;
 extern uint8_t receivedTrack;
 extern uint8_t receivedNum;
 extern uint8_t stopTrack;
+extern uint8_t mp3StopFlag;
 
 // Parse Command
-void parseCommand(uint8_t *rxBuffer) {
+void parseCommand(char *rxBuffer) {
 		char module[4] = { 0 };  // 3 letters + null
 		char value = 0;
 		
@@ -23,9 +24,9 @@ void parseCommand(uint8_t *rxBuffer) {
     else if (strncmp(module, "MP3", 3) == 0) {
         handleMp3Command(value);
     }
-    else if (strncmp(module, "NAV", 3) == 0) {
+    /*else if (strncmp(module, "NAV", 3) == 0) {
         handleNavCommand(value);
-    }
+    }*/
 }
 
 
@@ -57,7 +58,7 @@ void handleMp3Command(char val) {
         mp3Play(currentTrack);
         break;
     case '0': // Stop(when mp3Stop flag is false)
-				if (mp3stopFlag == 0) {
+				if (mp3StopFlag == 0) {
             mp3Stop();
         }
         break;

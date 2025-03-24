@@ -57,7 +57,7 @@ __weak void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     }
 }
 
-/*
+
 void Printing_t(int fan_count)
 {
     char buffer[16];
@@ -68,4 +68,3 @@ void Printing_t(int fan_count)
     sprintf(buffer, "Temperture: %d", fan_count);
     lcdSendString(buffer);
 }
-*/
