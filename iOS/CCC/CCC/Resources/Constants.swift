@@ -8,7 +8,7 @@ struct Constants {
     
     static let fanCharacteristicUUID = "11111111-2222-3333-4444-555555555555"
     static let mp3CharacteristicUUID = "22222222-3333-4444-5555-666666666666"
-    static let searchCharacteristicUUID = "33333333-4444-5555-6666-777777777777"
+    static let navCharacteristicUUID = "33333333-4444-5555-6666-777777777777"
     static let tempCharacteristicUUID = "44444444-5555-6666-7777-888888888888"
     
 }
