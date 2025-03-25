@@ -35,7 +35,7 @@ void CentralCommandRouter::handleReceiveCommand(const String& command) {
         uuid = FAN_CHARACTERISTIC_UUID;
         response = command;
     }
-    else if (key == "TEMP") {
+    else if (key == "TEM") {
         uuid = TEMP_CHARACTERISTIC_UUID;
         response = command;
     }
