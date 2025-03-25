@@ -15,8 +15,8 @@ void registerAllHandlers() {
     
     // UART 통신용 키워드 → 핸들러 ✅ 추가
     uartCommandRouter.registerHandler("LED", &centralCommandRouter);
-    uartCommandRouter.registerHandler("SEARCH", &centralCommandRouter);
-    uartCommandRouter.registerHandler("TEMP", &centralCommandRouter);
+    uartCommandRouter.registerHandler("NAV", &centralCommandRouter);
+    uartCommandRouter.registerHandler("TEM", &centralCommandRouter);
     uartCommandRouter.registerHandler("MP3", &centralCommandRouter);
     uartCommandRouter.registerHandler("FAN", &centralCommandRouter);
 }

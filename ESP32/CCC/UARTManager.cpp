@@ -44,11 +44,11 @@ void UARTManager::uartEventTask(void* pvParameters) {
                 int sepIndex = msg.indexOf(':');
                  if (sepIndex != -1) {
                     String key = msg.substring(0, sepIndex);     // 예: LED
-                    String value = msg.substring(sepIndex + 1);  // 예: 1
+                    //String value = msg.substring(sepIndex + 1);  // 예: 1
 
                     BaseCommandHandler* handler = uartCommandRouter.getHandler(key);
                     if (handler) {
-                        handler->handleReceiveCommand(value);
+                        handler->handleReceiveCommand(msg);
                     } else {
                         Serial.println("[UART] 등록되지 않은 핸들러: " + key);
                     }
