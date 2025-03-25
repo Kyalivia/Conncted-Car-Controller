@@ -38,6 +38,9 @@ void CentralCommandRouter::handleReceiveCommand(const String& command) {
     else if (key == "TEM") {
         uuid = TEMP_CHARACTERISTIC_UUID;
         response = command;
+    } else if (key == "NAV") {
+      uuid = SEARCH_CHARACTERISTIC_UUID;
+      response = command;
     }
     else {
         Serial.println("[CMD] 처리할 수 없는 키워드: " + key);
