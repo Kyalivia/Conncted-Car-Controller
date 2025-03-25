@@ -65,7 +65,7 @@ void Printing_t(int fan_count)
     lcdSetCursor(0, 0);
     lcdSendString("FAN ON");
     lcdSetCursor(1, 0);
-    sprintf(buffer, "Temperture: %d", fan_count);
+    sprintf(buffer, "Temperature: %d", fan_count);
     lcdSendString(buffer);
 }
 int getTemperature(void)

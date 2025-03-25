@@ -444,6 +444,21 @@
               <FileType>1</FileType>
               <FilePath>..\Core\Src\command.c</FilePath>
             </File>
+            <File>
+              <FileName>fatfs_sd.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\fatfs_sd.c</FilePath>
+            </File>
+            <File>
+              <FileName>navigation.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\navigation.c</FilePath>
+            </File>
+            <File>
+              <FileName>test.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\test.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
