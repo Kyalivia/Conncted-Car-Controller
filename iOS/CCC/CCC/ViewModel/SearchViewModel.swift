@@ -9,23 +9,25 @@ class SearchViewModel: ObservableObject {
     func startSearch() {
         isSearchSheetPresented = true
         searchText = ""
-        BluetoothService.shared.sendCommand(command: "NAV:1", characteristicUUID: Constants.navCharacteristicUUID)
+        BluetoothService.shared.sendCommand(command: "NAV:1", characteristicUUID: Constants.searchCharacteristicUUID)
     }
 
     func endSearch() {
         isSearchSheetPresented = false
-        BluetoothService.shared.sendCommand(command: "NAV:0", characteristicUUID: Constants.navCharacteristicUUID)
+        BluetoothService.shared.sendCommand(command: "NAV:0", characteristicUUID: Constants.searchCharacteristicUUID)
     }
 
     func sendSearchText() {
         Task {
             for char in searchText {
-                let command = "NAV:\(char)"
-                BluetoothService.shared.sendCommand(command: command, characteristicUUID: Constants.navCharacteristicUUID)
+                let lowercaseChar = String(char).lowercased()
+                let command = "NAV:\(lowercaseChar)"
+                BluetoothService.shared.sendCommand(command: command, characteristicUUID: Constants.searchCharacteristicUUID)
                 try? await Task.sleep(nanoseconds: 50_000_000)
             }
             endSearch()
             isSearchSheetPresented = false
         }
     }
+
 }

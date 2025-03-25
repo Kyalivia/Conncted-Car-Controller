@@ -23,6 +23,9 @@ struct RemoteControlPanel: View {
                 TabButton(title: "검색", icon: "magnifyingglass", isSelected: selectedTab == 3) {
                     selectedTab = 3
                 }
+                TabButton(title: "테스트", icon: "magnifyingglass", isSelected: selectedTab == 4) {
+                    selectedTab = 4
+                }
             }
 
             .padding(.horizontal)
@@ -40,6 +43,8 @@ struct RemoteControlPanel: View {
                         MP3View(viewModel: mp3ViewModel)
                     case 3:
                         SearchView(viewModel: serachViewModel)
+                    case 4:
+                        LEDView()
                     default:
                         EmptyView()
                     }

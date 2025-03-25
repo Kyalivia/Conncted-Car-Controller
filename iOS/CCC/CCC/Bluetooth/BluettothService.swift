@@ -144,6 +144,10 @@ extension BluetoothService: CBPeripheralDelegate {
         for service in peripheral.services ?? [] {
             if service.uuid == CBUUID(string: Constants.serviceUUID) {
                 peripheral.discoverCharacteristics([CBUUID(string: Constants.ledUUID)], for: service)
+                peripheral.discoverCharacteristics([CBUUID(string: Constants.fanCharacteristicUUID)], for: service)
+                peripheral.discoverCharacteristics([CBUUID(string: Constants.mp3CharacteristicUUID)], for: service)
+                peripheral.discoverCharacteristics([CBUUID(string: Constants.searchCharacteristicUUID)], for: service)
+                peripheral.discoverCharacteristics([CBUUID(string: Constants.tempCharacteristicUUID)], for: service)
             }
         }
     }
@@ -155,10 +159,8 @@ extension BluetoothService: CBPeripheralDelegate {
         }
 
         for characteristic in service.characteristics ?? [] {
-            if characteristic.uuid == CBUUID(string: Constants.ledUUID) {
-                peripheral.setNotifyValue(true, for: characteristic)
-                print("✅ \(Constants.ledUUID) Notify 등록 완료")
-            }
+            peripheral.setNotifyValue(true, for: characteristic)
+            print("✅ \(characteristic.uuid) Notify 등록 완료")
         }
     }
     
