@@ -32,9 +32,10 @@ void parseCommand(char *rxBuffer) {
 		else if (strncmp(module, "TEM", 3) == 0) {
         handleTemperatureCommand();
     }
-    /*else if (strncmp(module, "NAV", 3) == 0) {
+    else if (strncmp(module, "NAV", 3) == 0) {
         handleNavCommand(value);
-    }*/
+		}
+    
 }
 
 void handleTemperatureCommand(void) {
@@ -74,11 +75,9 @@ void handleMp3Command(char val) {
     case '1': // Start Current Track
         mp3Play(currentTrack);
         break;
-		/*
     case '0': // Stop(when mp3Stop flag is false)
 		if (mp3StopFlag == 0) mp3Stop();
         break;
-		*/
     case 'r': // Play Random Track
         currentTrack = mp3GetRandomTrack();
         mp3Play(currentTrack);
@@ -120,7 +119,7 @@ void handleNavCommand(char val) {
 						lcdSendString("Location...");
 						lcdSetCursor(1, 0);
 						lcdSendString(navBuffer);
-						HAL_Delay(1000);
+						//HAL_Delay(1000);
         }
     }
 }
