@@ -59,6 +59,13 @@ uint8_t receivedTrack;
 uint8_t stopTrack;
 // callback flag
 uint8_t isConnect;
+// sd card varaibles
+FATFS fs;
+FIL fil;
+// navigation commend
+char navBuffer[NAV_BUFFER_SIZE] = { 0 };  // Current Navigation Buffer
+uint8_t navIndex = 0; // Navigation Buffer Length
+uint8_t nav_input_mode = 0; // Navigation Input Mode Flag
 
 /* USER CODE END PV */
 
@@ -125,10 +132,22 @@ int main(void)
 	fanInit();
 	lcdInit();
 	temperatureInit(&hadc);
+	f_mount(&fs, "", 0);
 	///////important init()
-	lcdSetCursor(0, 0);
-	lcdSendString("Hello World!");
-	*/
+	
+	/* lcd output test */
+	// lcdTest();
+
+	/* sd card test - read city.txt */	
+	// sdReadTest();
+	
+	/* find Location in sd test */
+	// findLocationTest();
+	
+	/* check key input and find test */
+	// handleNavCommandTest();
+	
+	
 	
 	// command test
 	// HAL_UART_Receive_IT(&huart1, (uint8_t*)rxBuffer, 5);
@@ -155,6 +174,7 @@ int main(void)
 		temperatureProcess();// this is important
 		
 		//example of temperature
+		/*
 		if (temp_ready)
         {
             temp_ready = 0;
@@ -163,7 +183,10 @@ int main(void)
             lcdSendString("TEMP READY");
             Printing_t((int)latest_temperature);
         }
+			*/
   }
+	
+	
   /* USER CODE END 3 */
 }
 
