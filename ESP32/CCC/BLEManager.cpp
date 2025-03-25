@@ -1,29 +1,16 @@
 #include "BLEManager.h"
-#include "LEDController.h"
-#include "CommandRegistry.h"
-#include "HandlerRegistry.h"
-// BLE UUID 설정 (서비스 UUID 하나, 특성 UUID 개별 설정)
-//#define SERVICE_UUID "12345678-1234-5678-1234-56789abcdef0"
+#include "HeaderInstance.h"
 
-#define SERVICE_UUID        "12345678-1234-5678-1234-56789abcdef0"
-#define LED_CHARACTERISTIC_UUID "87654321-4321-6789-4321-6789abcdef01"
-
-extern HandlerRegistry handlerRegistry;
-extern CommandRegistry commandRegistry;
-BLEServer* pServer = NULL;
-
-// BLE 데이터 수신 콜백
-class MyCharacteristicCallbacks: public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic* pCharacteristic) {
-        String characteristicUUID = pCharacteristic->getUUID().toString().c_str();
+class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
+    void onWrite(BLECharacteristic* pCharacteristic) override {
+        String uuid = pCharacteristic->getUUID().toString().c_str();
         String command = pCharacteristic->getValue();
 
-        Serial.println("[BLE] 데이터 수신 - 특성: " + characteristicUUID + " / 명령: " + command);
+        Serial.println("[BLE] 수신 - UUID: " + uuid + " / 명령: " + command);
 
-        // 특성 UUID에 따라 적절한 컨트롤러 호출
-        CommandHandler* handler = handlerRegistry.getHandler(characteristicUUID);
+        BaseCommandHandler* handler = bleUUIDRouter.getHandler(uuid);
         if (handler) {
-            handler->handleCommand(command);
+            handler->handleSendCommand(command);
         } else {
             Serial.println("[BLE] 등록되지 않은 UUID입니다.");
         }
@@ -37,29 +24,45 @@ void BLEManager::init() {
 
     BLEService *pService = pServer->createService(SERVICE_UUID);
 
-    ledCharacteristic = pService->createCharacteristic(
-        LED_CHARACTERISTIC_UUID,
-        BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE
-    );
-    ledCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
+    ledCharacteristic = pService->createCharacteristic(LED_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+    fanCharacteristic = pService->createCharacteristic(FAN_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+    mp3Characteristic = pService->createCharacteristic(MP3_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+    tempCharacteristic = pService->createCharacteristic(TEMP_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
+    searchCharacteristic = pService->createCharacteristic(SEARCH_CHARACTERISTIC_UUID, BLECharacteristic::PROPERTY_READ | BLECharacteristic::PROPERTY_WRITE);
 
+    ledCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
+    fanCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
+    mp3Characteristic->setCallbacks(new MyCharacteristicCallbacks());
+    tempCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
+    searchCharacteristic->setCallbacks(new MyCharacteristicCallbacks());
 
     pService->start();
 
     BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
     pAdvertising->addServiceUUID(SERVICE_UUID);
     BLEDevice::startAdvertising();
-    
+
     Serial.println("[BLE] ESP32 BLE 서버 시작됨...");
 }
 
-//앱에 데이터 전송 , LED 예시
-void BLEManager::sendToApp(const String& msg) {
-    ledCharacteristic->setValue(msg);
-    ledCharacteristic->notify();
+void BLEManager::sendToApp(const String& msg, const String& characteristicUUID) {
+    BLECharacteristic* target = nullptr;
 
-    Serial.print("[BLE] SwiftUI에 LED 상태 전송: ");
-    Serial.println(msg);
+    if (characteristicUUID == LED_CHARACTERISTIC_UUID) target = ledCharacteristic;
+    else if (characteristicUUID == FAN_CHARACTERISTIC_UUID) target = fanCharacteristic;
+    else if (characteristicUUID == MP3_CHARACTERISTIC_UUID) target = mp3Characteristic;
+    else if (characteristicUUID == TEMP_CHARACTERISTIC_UUID) target = tempCharacteristic;
+    else if (characteristicUUID == SEARCH_CHARACTERISTIC_UUID) target = searchCharacteristic;
+
+    if (target) {
+        target->setValue(msg);
+        target->notify();
+
+        Serial.print("[BLE] 앱으로 데이터 전송: ");
+        Serial.println(msg);
+    } else {
+        Serial.println("[BLE] 알 수 없는 특성 UUID입니다.");
+    }
 }
 
 void BLEManager::update() {
@@ -74,4 +77,3 @@ void BLEManager::update() {
 
     oldDeviceConnected = deviceConnected;
 }
-
