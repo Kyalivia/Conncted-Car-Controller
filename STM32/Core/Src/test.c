@@ -11,7 +11,6 @@ extern FIL fil;
 
 
 /* MP3 TEST */
-// mp3 Play Test
 void mp3PlayTest()
 {
 	mp3Play(2);
@@ -22,7 +21,6 @@ void mp3PlayTest()
 	HAL_Delay(2000);
 }
 
-// mp3 Control Test
 void mp3ControlTest()
 {
 	mp3Previous();
@@ -42,10 +40,10 @@ void mp3ControlTest()
 	mp3IncreaseVolume();
 	HAL_Delay(2000);
 }
-/* LCD TEST */
 
+/* LCD TEST */
 /* lcd output test */
-void lcdTest()
+void lcdOutputTest()
 {
 	lcdClearDisplay();
 	lcdSetCursor(0, 0);
@@ -55,7 +53,7 @@ void lcdTest()
 
 /* NAVIAGATION(SD) TEST */
 /* sd card test - read city.txt */
-void sdReadTest()
+void navSdReadTest()
 {
 	char buffer[100];
 	if (f_open(&fil, "city.txt", FA_READ) == FR_OK)
@@ -73,7 +71,7 @@ void sdReadTest()
 
 
 /* find Location in sd test */
-void findLocationTest()
+void navFindLocationTest()
 {
 	// O
 	findLocation("seoul");
@@ -88,7 +86,7 @@ void findLocationTest()
 
 
 /* check key input and find test */
-void handleNavCommandTest()
+void navCommandTest()
 {
 	// O - seoul
 	handleNavCommand('1');handleNavCommand('s');handleNavCommand('e');handleNavCommand('o');handleNavCommand('u');handleNavCommand('l'); handleNavCommand('0');

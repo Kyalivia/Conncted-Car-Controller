@@ -3,16 +3,21 @@
 
 #include "command.h"
 
-//lcd
-void lcdTest();
-//sd card & navigation
-void sdReadTest();
-void findLocationTest();
-void handleNavCommandTest();
-//mp3
-//void handleMp3Command();
+// Function name: Module + Active + Test
+
+//Fan Test
+
+
+//Mp3 Test
 void mp3PlayTest();
 void mp3ControlTest();
-//fan
+
+//Lcd Test
+void lcdOutputTest();
+
+//Navigation Test
+void navSdReadTest();
+void navFindLocationTest();
+void navCommandTest();
 
 #endif 
