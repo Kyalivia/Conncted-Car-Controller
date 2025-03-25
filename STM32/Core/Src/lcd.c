@@ -80,3 +80,5 @@ void lcdInit(void) {
 	// Display Switch
   lcdSend8bit(0b00001100, 1000); 
 }
+
+

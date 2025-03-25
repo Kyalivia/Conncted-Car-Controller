@@ -19,6 +19,8 @@
 
 # STM32 CubeMX
 /STM32/Drivers/
-/STM32/FATFS/
 /MDK-ARM/
 /Middlewares/
+
+# for update user_diskio.c
+#/STM32/FATFS/

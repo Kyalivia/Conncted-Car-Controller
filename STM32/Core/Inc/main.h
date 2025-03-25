@@ -37,8 +37,8 @@ extern "C" {
 #include "lcd.h"
 #include "callback.h"
 #include "command.h"
-
 #include "temperature.h"
+#include "test.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/

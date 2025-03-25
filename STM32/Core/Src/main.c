@@ -60,6 +60,13 @@ uint8_t stopTrack;
 uint8_t mp3StopFlag;
 // callback flag
 uint8_t isConnect;
+// sd card varaibles
+FATFS fs;
+FIL fil;
+// navigation commend
+char navBuffer[NAV_BUFFER_SIZE] = { 0 };  // Current Navigation Buffer
+uint8_t navIndex = 0; // Navigation Buffer Length
+uint8_t nav_input_mode = 0; // Navigation Input Mode Flag
 
 char rxbuffer[10];
 /* USER CODE END PV */
@@ -127,15 +134,31 @@ int main(void)
 	fanInit();
 	lcdInit();
 	temperatureInit(&hadc);
+  mp3DfplayerInit(); // Reset mp3 Player
+	f_mount(&fs, "", 0);
 	///////important init()
-	lcdSetCursor(0, 0);
+
+  /* statrt */
+  lcdSetCursor(0, 0);
 	lcdSendString("Genesis G70");
 	lcdSetCursor(1, 0);
 	lcdSendString("Hello Mr.Ahn");
+	
+	/* lcd output test */
+	// lcdTest();
 
+	/* sd card test - read city.txt */	
+	// sdReadTest();
+	
+	/* find Location in sd test */
+	// findLocationTest();
+	
+	/* check key input and find test */
+	// handleNavCommandTest();
+	
 	// command test
 	// HAL_UART_Receive_IT(&huart1, (uint8_t*)rxBuffer, 5);
-	mp3DfplayerInit(); // Reset mp3 Player
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -164,8 +187,11 @@ int main(void)
             lcdSetCursor(0, 0);
             lcdSendString("TEMP READY");
             Printing_t((int)latest_temperature);
-    }*/
+        }
+			*/
   }
+	
+	
   /* USER CODE END 3 */
 }
 

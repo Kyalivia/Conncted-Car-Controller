@@ -1,0 +1,17 @@
+seoul, 37N, 126E  
+busan, 35N, 129E  
+daegu, 35N, 128E  
+incheon, 37N, 126E  
+gwangju, 35N, 126E  
+daejeon, 36N, 127E  
+ulsan, 35N, 129E  
+sejong, 36N, 127E  
+gyeonggi, 37N, 127E  
+gangwon, 37N, 128E  
+chungbuk, 36N, 127E  
+chungnam, 36N, 126E  
+jeonbuk, 35N, 127E  
+jeonnam, 34N, 126E  
+gyeongbuk, 36N, 128E  
+gyeongnam, 35N, 128E  
+jeju, 33N, 126E
