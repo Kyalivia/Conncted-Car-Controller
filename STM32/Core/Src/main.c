@@ -146,7 +146,7 @@ int main(void)
 	
 	/* lcd output test */
 	// lcdTest();
-
+	HAL_UART_Receive_IT(&huart1, (uint8_t*)rxbuffer, 5);
 	/* sd card test - read city.txt */	
 	// sdReadTest();
 	
@@ -174,9 +174,11 @@ int main(void)
 			// check rxbuffer
 			if (strlen(rxbuffer) == 5)
 				parseCommand(rxbuffer);
+			isConnect = 0;
+			HAL_UART_Receive_IT(&huart1, (uint8_t*)rxbuffer, 5);
 		}
-		isConnect = 0;
-		HAL_UART_Receive_IT(&huart1, (uint8_t*)rxbuffer, 5);
+		
+		
 		
 		temperatureProcess();// this is important
 		
