@@ -54,9 +54,10 @@ UART_HandleTypeDef huart4;
 /* USER CODE BEGIN PV */
 // mp3 varaible
 uint8_t currentVolume;
-uint8_t currentTrack;
+uint8_t currentTrack = 1;
 uint8_t receivedTrack;
 uint8_t stopTrack;
+uint8_t mp3StopFlag;
 // callback flag
 uint8_t isConnect;
 // sd card varaibles
@@ -67,6 +68,7 @@ char navBuffer[NAV_BUFFER_SIZE] = { 0 };  // Current Navigation Buffer
 uint8_t navIndex = 0; // Navigation Buffer Length
 uint8_t nav_input_mode = 0; // Navigation Input Mode Flag
 
+char rxbuffer[10];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -132,8 +134,15 @@ int main(void)
 	fanInit();
 	lcdInit();
 	temperatureInit(&hadc);
+  mp3DfplayerInit(); // Reset mp3 Player
 	f_mount(&fs, "", 0);
 	///////important init()
+
+  /* statrt */
+  lcdSetCursor(0, 0);
+	lcdSendString("Genesis G70");
+	lcdSetCursor(1, 0);
+	lcdSendString("Hello Mr.Ahn");
 	
 	/* lcd output test */
 	// lcdTest();
@@ -147,11 +156,9 @@ int main(void)
 	/* check key input and find test */
 	// handleNavCommandTest();
 	
-	
-	
 	// command test
 	// HAL_UART_Receive_IT(&huart1, (uint8_t*)rxBuffer, 5);
-
+	
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -162,21 +169,19 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 		// command test
-		/*
+		
 		if(isConnect) {
 			// check rxbuffer
 			if (strlen(rxbuffer) == 5)
 				parseCommand(rxbuffer);
 		}
 		isConnect = 0;
-		HAL_UART_Receive_IT(&huart1, (uint8_t*)rxBuffer, 5);
-		*/
+		HAL_UART_Receive_IT(&huart1, (uint8_t*)rxbuffer, 5);
+		
 		temperatureProcess();// this is important
 		
 		//example of temperature
-		/*
-		if (temp_ready)
-        {
+		/*if (temp_ready) {
             temp_ready = 0;
             lcdClearDisplay();
             lcdSetCursor(0, 0);

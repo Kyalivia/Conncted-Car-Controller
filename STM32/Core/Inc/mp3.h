@@ -8,7 +8,9 @@
 void mp3SendCommand(uint8_t cmd, uint8_t param1, uint8_t param2);
 // Play MP3 track 
 void mp3Play(uint8_t trackNum);
-// Volume Set (0 ~ 30)
+// Stop Playing mp3
+void mp3Stop(void);
+// Set Volume
 void mp3SetVolume(uint8_t level);
 // Volume Increase (+5)
 void mp3IncreaseVolume(void);
@@ -16,10 +18,6 @@ void mp3IncreaseVolume(void);
 void mp3DecreaseVolume(void);
 // DFPlayer Mini Reset
 void mp3DfplayerInit(void);
-// Stop Playing mp3
-void mp3Stop(void);
-// Resume Playing mp3
-void mp3Resume(void);
 // Next Track
 void mp3Next(void);
 // Previous Track

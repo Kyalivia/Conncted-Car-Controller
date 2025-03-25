@@ -40,7 +40,7 @@ void temperatureProcess(void)
     }
 }
 
-__weak void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) 
+ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) 
 {
     if (htim->Instance == TIM7)
     {
@@ -48,7 +48,7 @@ __weak void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     }
 }
 
-__weak void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+ void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
 {
     if (hadc->Instance == ADC1)
     {
@@ -57,7 +57,7 @@ __weak void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
     }
 }
 
-/*
+
 void Printing_t(int fan_count)
 {
     char buffer[16];
@@ -68,4 +68,7 @@ void Printing_t(int fan_count)
     sprintf(buffer, "Temperture: %d", fan_count);
     lcdSendString(buffer);
 }
-*/
+int getTemperature(void)
+{
+    return latest_temperature;
+}

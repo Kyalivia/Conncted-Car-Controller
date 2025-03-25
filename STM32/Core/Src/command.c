@@ -6,17 +6,19 @@ extern uint8_t currentTrack;
 extern uint8_t receivedTrack;
 extern uint8_t receivedNum;
 extern uint8_t stopTrack;
+extern uint8_t mp3StopFlag;
 // Current NavBuffer
 extern char navBuffer[NAV_BUFFER_SIZE];
 extern uint8_t navIndex;
 extern uint8_t nav_input_mode;
 
+extern UART_HandleTypeDef huart1;
+
 // Parse Command
-void parseCommand(uint8_t *rxBuffer) {
+void parseCommand(char *rxBuffer) {
 		char module[4] = { 0 };  // 3 letters + null
 		char value = 0;
 		
-    // parsing module name
 		// Module name Parcing
     strncpy(module, (char*)rxBuffer, 3);  // "FAN", "MP3", "NAV"
     value = rxBuffer[4]; // Last 1 Letter (Num, Char...)
@@ -27,11 +29,22 @@ void parseCommand(uint8_t *rxBuffer) {
     else if (strncmp(module, "MP3", 3) == 0) {
         handleMp3Command(value);
     }
-    else if (strncmp(module, "NAV", 3) == 0) {
-        handleNavCommand(value);
+		else if (strncmp(module, "TEM", 3) == 0) {
+        handleTemperatureCommand();
     }
+    /*else if (strncmp(module, "NAV", 3) == 0) {
+        handleNavCommand(value);
+    }*/
 }
 
+void handleTemperatureCommand(void) {
+    int temperature = getTemperature();
+
+    char uartBuffer[32];
+		int len = snprintf(uartBuffer, sizeof(uartBuffer), "TEM:%d", temperature);
+
+    HAL_UART_Transmit(&huart1, (uint8_t*)uartBuffer, len, HAL_MAX_DELAY);
+}
 
 // Fan Control Command
 void handleFanCommand(char val) {
@@ -47,6 +60,7 @@ void handleFanCommand(char val) {
         break;
     case 'b':
         fanSet(2);
+				break;
     case 'c':
         fanSet(3);
         break;
@@ -62,9 +76,7 @@ void handleMp3Command(char val) {
         break;
 		/*
     case '0': // Stop(when mp3Stop flag is false)
-				if (mp3stopFlag == 0) {
-            mp3Stop();
-        }
+		if (mp3StopFlag == 0) mp3Stop();
         break;
 		*/
     case 'r': // Play Random Track

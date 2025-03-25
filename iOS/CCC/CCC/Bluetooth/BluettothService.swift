@@ -20,8 +20,12 @@ final class BluetoothService: NSObject, ObservableObject {
     @Published var isBluetoothOn = false
     @Published var isConnected = false
     @Published var discoveredDevices: [BLEDevice] = []
-    @Published var ledStatus: Bool = false
     @Published var connectedDeviceName: String?
+    
+    // 구독해야하는 수신 데이터들
+    @Published var receivedTemperature: String = "--"
+    @Published var ledStatus: Bool = false
+
     
     private override init() {
         super.init()
@@ -64,27 +68,6 @@ final class BluetoothService: NSObject, ObservableObject {
         self.isConnected = false
     }
     
-//    func sendLEDCommand(_ command: String) {
-//        guard let peripheral = peripheral else {
-//            print("⚠️ peripheral이 nil 상태")
-//            return
-//        }
-//
-//        let data = command.data(using: .utf8)!
-//        let characteristicUUID = CBUUID(string: Constants.characteristicUUID)
-//        
-//        for service in peripheral.services ?? [] {
-//            for characteristic in service.characteristics ?? [] {
-//                if characteristic.uuid == characteristicUUID {
-//                    peripheral.writeValue(data, for: characteristic, type: .withResponse)
-//                    print("🟢 LED 제어 명령 전송: \(command)")
-//                    return
-//                }
-//            }
-//        }
-//        
-//        print("🚨 LED 특성 못 찾음")
-//    }
     func sendCommand(command: String, characteristicUUID: String) {
         guard let peripheral = peripheral else {
             print("⚠️ peripheral이 nil 상태")
@@ -161,6 +144,10 @@ extension BluetoothService: CBPeripheralDelegate {
         for service in peripheral.services ?? [] {
             if service.uuid == CBUUID(string: Constants.serviceUUID) {
                 peripheral.discoverCharacteristics([CBUUID(string: Constants.ledUUID)], for: service)
+                peripheral.discoverCharacteristics([CBUUID(string: Constants.fanCharacteristicUUID)], for: service)
+                peripheral.discoverCharacteristics([CBUUID(string: Constants.mp3CharacteristicUUID)], for: service)
+                peripheral.discoverCharacteristics([CBUUID(string: Constants.searchCharacteristicUUID)], for: service)
+                peripheral.discoverCharacteristics([CBUUID(string: Constants.tempCharacteristicUUID)], for: service)
             }
         }
     }
@@ -172,22 +159,24 @@ extension BluetoothService: CBPeripheralDelegate {
         }
 
         for characteristic in service.characteristics ?? [] {
-            if characteristic.uuid == CBUUID(string: Constants.ledUUID) {
-                peripheral.setNotifyValue(true, for: characteristic)
-                print("✅ \(Constants.ledUUID) Notify 등록 완료")
-            }
+            peripheral.setNotifyValue(true, for: characteristic)
+            print("✅ \(characteristic.uuid) Notify 등록 완료")
         }
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard let value = characteristic.value,
-              let ledStatus = String(data: value, encoding: .utf8) else {
-            return
-        }
+              let message = String(data: value, encoding: .utf8) else { return }
 
-        print("📡 LED 상태 수신: \(ledStatus)")
-        DispatchQueue.main.async {
-            self.ledStatus = (ledStatus == "1")
+        print("📡 수신 데이터: \(message)")
+
+        if message.hasPrefix("TEM:") {
+            let tempValue = message.replacingOccurrences(of: "TEM:", with: "")
+            DispatchQueue.main.async {
+                self.receivedTemperature = tempValue
+            }
         }
+        // LED, NAV 등의 분기는 위에 계속 추가
     }
+
 }

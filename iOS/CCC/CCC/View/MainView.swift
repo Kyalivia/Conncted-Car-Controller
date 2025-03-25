@@ -64,6 +64,7 @@ struct MainView: View {
                             .font(.title2)
                             .foregroundColor(.white)
                     }
+                    .toggleStyle(SwitchToggleStyle(tint: Color.cyan))
                     .onChange(of: isBluetoothOn) {
                         withAnimation {
                             if isBluetoothOn {
