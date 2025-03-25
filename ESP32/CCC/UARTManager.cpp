@@ -1,13 +1,10 @@
 #include "UARTManager.h"
 #include "driver/uart.h"
-#include "LEDController.h"
-#include "CommandRegistry.h"
+#include "HeaderInstance.h"
 
 #define UART_PORT UART_NUM_1
 #define STM32_RX 16
 #define STM32_TX 17
-
-extern CommandRegistry commandRegistry;
 
 QueueHandle_t uartQueue;
 
@@ -49,28 +46,21 @@ void UARTManager::uartEventTask(void* pvParameters) {
                     String key = msg.substring(0, sepIndex);     // 예: LED
                     String value = msg.substring(sepIndex + 1);  // 예: 1
 
-                    CommandHandler* handler = commandRegistry.getHandler(key);
+                    BaseCommandHandler* handler = uartCommandRouter.getHandler(key);
                     if (handler) {
-                        handler->handleCommand(value);
+                        handler->handleReceiveCommand(value);
                     } else {
                         Serial.println("[UART] 등록되지 않은 핸들러: " + key);
                     }
                 } else {
                     Serial.println("[UART] 잘못된 명령 형식: " + msg);
                 }
-
-                // 키워드 기준 분기 처리
-                if (msg.startsWith("LED:")) {
-                    //
-                } else {
-                    Serial.println("[UART] 처리 불가: " + msg);
-                }
             }
         }
     }
 }
 
-void sendUARTToSTM(const String& msg) {
+void UARTManager::sendUARTToSTM(const String& msg) {
     const char* cstr = msg.c_str();
     uart_write_bytes(UART_PORT, cstr, strlen(cstr));
 }

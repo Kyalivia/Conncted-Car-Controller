@@ -1,9 +1,5 @@
-#include "Handlers.h"
-#include "BLEManager.h"
-#include "UARTManager.h"
-
-BLEManager bleManager;
-UARTManager uartManager;
+#include "RouterInitializer.h"
+#include "HeaderInstance.h"
 
 void setup() {
   // 시리얼 디버깅 시작
