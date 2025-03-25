@@ -11,8 +11,37 @@ extern FIL fil;
 
 
 /* MP3 TEST */
+// mp3 Play Test
+void mp3PlayTest()
+{
+	mp3Play(2);
+	HAL_Delay(2000);
+	mp3Play(5);
+	HAL_Delay(2000);
+	mp3Play(8);
+	HAL_Delay(2000);
+}
 
+// mp3 Control Test
+void mp3ControlTest()
+{
+	mp3Previous();
+	HAL_Delay(2000);
+	mp3Previous();
+	HAL_Delay(2000);
+	mp3Next();
+	HAL_Delay(2000);
+	
+	mp3Stop();
+	HAL_Delay(2000);
+	mp3Play(5); // Stopped -> 5 is fake value to fit in function
+	HAL_Delay(2000);
 
+	mp3DecreaseVolume();
+	HAL_Delay(2000);
+	mp3IncreaseVolume();
+	HAL_Delay(2000);
+}
 /* LCD TEST */
 
 /* lcd output test */
