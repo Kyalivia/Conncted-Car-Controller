@@ -28,26 +28,18 @@ void mp3SendCommand(uint8_t cmd, uint8_t param1, uint8_t param2) {
 void mp3Play(uint8_t trackNum) {
 	lcdClearDisplay();
 	if (mp3StopFlag == 0) { // Normal Case
-		if (trackNum >= 1 && trackNum <= 8) {
-			currentTrack = trackNum;
-			mp3SendCommand(0x03, 0x00, currentTrack);
+		currentTrack = trackNum;
+		mp3SendCommand(0x03, 0x00, currentTrack);
 
-			lcdSetCursor(0, 0); // Line 1
-			char buffer1[16];
-			sprintf(buffer1, "Music Track: %d", currentTrack);
-			lcdSendString(buffer1);
+		lcdSetCursor(0, 0); // Line 1
+		char buffer1[16];
+		sprintf(buffer1, "Music Track: %d", currentTrack);
+		lcdSendString(buffer1);
 
-			lcdSetCursor(1, 0); // Line 2
-			char buffer2[16];
-			sprintf(buffer2, "Volume: %d", currentVolume);
-			lcdSendString(buffer2);
-		}
-		else {
-			lcdSetCursor(0, 0); // Line 1
-			char buffer[16];
-			sprintf(buffer, "Invalid Track");
-			lcdSendString(buffer);
-		}
+		lcdSetCursor(1, 0); // Line 2
+		char buffer2[16];
+		sprintf(buffer2, "Volume: %d", currentVolume);
+		lcdSendString(buffer2);
 	}
 	else { // If Music is Already Stopped
 		currentTrack = stopTrack;
@@ -74,9 +66,7 @@ void mp3Stop(void) {
 
 	lcdClearDisplay();
 	lcdSetCursor(0, 0); // Line 1
-	char buffer1[16];
-	sprintf(buffer1, "Music Stop");
-	lcdSendString(buffer1);
+	lcdSendString("Music Stop");
 }
 
 // Volume Set (0 ~ 30)
@@ -88,10 +78,8 @@ void mp3SetVolume(uint8_t level) {
 
 // Volume Increase (+5)
 void mp3IncreaseVolume(void) {
-	if (currentVolume + 5 <= 30) 
-		currentVolume += 5;
-	else
-		currentVolume = 30;
+	if (currentVolume + 5 <= 30) currentVolume += 5;
+	else currentVolume = 30;
 	mp3SendCommand(0x06, 0x00, currentVolume);
 	
 	lcdClearDisplay();
@@ -102,18 +90,14 @@ void mp3IncreaseVolume(void) {
 	
 	if (currentVolume == 30) {
 		lcdSetCursor(1,0); // Line 2
-		char buffer2[16];
-		sprintf(buffer2, "Volume Max");
-		lcdSendString(buffer2);
+		lcdSendString("Volume Max");
 	}
 }
 
 // Volume Decrease (-5)
 void mp3DecreaseVolume(void) {
-	if (currentVolume - 5 >= 0)
-		currentVolume -= 5;
-	else
-		currentVolume = 0;
+	if (currentVolume - 5 >= 0) currentVolume -= 5;
+	else currentVolume = 0;
 	mp3SendCommand(0x06, 0x00, currentVolume);
 	
 	lcdClearDisplay();
@@ -124,9 +108,7 @@ void mp3DecreaseVolume(void) {
 	
 	if (currentVolume == 0) {
 		lcdSetCursor(1,0); // Line 2
-		char buffer2[16];
-		sprintf(buffer2, "Volume Min");
-		lcdSendString(buffer2);
+		lcdSendString("Volume Min");
 	}
 }
 
@@ -138,22 +120,14 @@ void mp3DfplayerInit(void) {
 
 // Play Next Track
 void mp3Next(void) {
-	if (currentTrack < 8) {
-		mp3Play(currentTrack + 1);
-	}
-	else if (currentTrack == 8) {
-		mp3Play(1);
-	}
+	if (currentTrack < 8) mp3Play(currentTrack + 1);
+	else if (currentTrack == 8) mp3Play(1);
 }
 
 // Play Previous Track
 void mp3Previous(void) {
-  if (currentTrack > 1) {
-		mp3Play(currentTrack - 1);
-	}
-	else if (currentTrack == 1) {
-		mp3Play(8);
-	}
+  if (currentTrack > 1) mp3Play(currentTrack - 1);
+	else if (currentTrack == 1) mp3Play(8);
 }
 
 // Get Random Number

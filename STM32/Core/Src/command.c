@@ -13,7 +13,6 @@ void parseCommand(char *rxBuffer) {
 		char module[4] = { 0 };  // 3 letters + null
 		char value = 0;
 		
-    // parsing module name
 		// Module name Parcing
     strncpy(module, (char*)rxBuffer, 3);  // "FAN", "MP3", "NAV"
     value = rxBuffer[4]; // Last 1 Letter (Num, Char...)
@@ -70,9 +69,7 @@ void handleMp3Command(char val) {
         mp3Play(currentTrack);
         break;
     case '0': // Stop(when mp3Stop flag is false)
-				if (mp3StopFlag == 0) {
-            mp3Stop();
-        }
+		if (mp3StopFlag == 0) mp3Stop();
         break;
     case 'r': // Play Random Track
         currentTrack = mp3GetRandomTrack();
