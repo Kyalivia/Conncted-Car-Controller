@@ -6,6 +6,10 @@ extern uint8_t currentTrack;
 extern uint8_t receivedTrack;
 extern uint8_t receivedNum;
 extern uint8_t stopTrack;
+// Current NavBuffer
+extern char navBuffer[NAV_BUFFER_SIZE];
+extern uint8_t navIndex;
+extern uint8_t nav_input_mode;
 
 // Parse Command
 void parseCommand(uint8_t *rxBuffer) {
@@ -56,11 +60,13 @@ void handleMp3Command(char val) {
     case '1': // Start Current Track
         mp3Play(currentTrack);
         break;
+		/*
     case '0': // Stop(when mp3Stop flag is false)
 				if (mp3stopFlag == 0) {
             mp3Stop();
         }
         break;
+		*/
     case 'r': // Play Random Track
         currentTrack = mp3GetRandomTrack();
         mp3Play(currentTrack);
@@ -82,11 +88,7 @@ void handleMp3Command(char val) {
 
 
 // Navigation Control Command
-/*
 void handleNavCommand(char val) {
-		char navBuffer[NAV_BUFFER_SIZE] = { 0 };  // Current Navigation Buffer
-		uint8_t navIndex = 0; // Navigation Buffer Length
-		uint8_t nav_input_mode = 0; // Navigation Input Mode Flag
     if (val == '1') {
         nav_input_mode = 1;      // Input Mode Start
         navIndex = 0;            // Buffer Reset
@@ -95,15 +97,18 @@ void handleNavCommand(char val) {
     else if (val == '0') {
         nav_input_mode = 0;      // Finish Input
         navBuffer[navIndex] = '\0';  // End Letter Null
-
-        // Print Successfully Made "navBuffer" String
-        printf("Input String: %s\n", navBuffer);
+				findLocation(navBuffer);
     }
     else if (nav_input_mode && navIndex < NAV_BUFFER_SIZE - 1) {
         // a~z Input
         if (val >= 'a' && val <= 'z') {
             navBuffer[navIndex++] = val;
+						lcdClearDisplay();
+						lcdSetCursor(0, 0);
+						lcdSendString("Location...");
+						lcdSetCursor(1, 0);
+						lcdSendString(navBuffer);
+						HAL_Delay(1000);
         }
     }
 }
-*/

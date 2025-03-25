@@ -7,7 +7,8 @@
 #include <string.h>
 #include "fan.h"
 #include "mp3.h"
-// #include "navigation.h"
+#include "navigation.h"
+#include "lcd.h"
 
 
 void parseCommand(uint8_t *rxBuffer);
