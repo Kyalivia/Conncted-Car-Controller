@@ -54,7 +54,7 @@ UART_HandleTypeDef huart4;
 /* USER CODE BEGIN PV */
 // mp3 varaible
 uint8_t currentVolume;
-uint8_t currentTrack = 4;
+uint8_t currentTrack = 1;
 uint8_t receivedTrack;
 uint8_t stopTrack;
 uint8_t mp3StopFlag;
@@ -129,12 +129,13 @@ int main(void)
 	temperatureInit(&hadc);
 	///////important init()
 	lcdSetCursor(0, 0);
-	lcdSendString("Hello World!");
-	
-	
+	lcdSendString("Genesis G70");
+	lcdSetCursor(1, 0);
+	lcdSendString("Hello Mr.Ahn");
+
 	// command test
 	// HAL_UART_Receive_IT(&huart1, (uint8_t*)rxBuffer, 5);
-	mp3DfplayerInit();
+	mp3DfplayerInit(); // Reset mp3 Player
   /* USER CODE END 2 */
 
   /* Infinite loop */
