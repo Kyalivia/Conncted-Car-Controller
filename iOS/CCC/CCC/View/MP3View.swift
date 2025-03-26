@@ -9,9 +9,13 @@ struct MP3View: View {
             // 🎯 볼륨 슬라이더 - 애니메이션 등장
             if viewModel.isPlaying {
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("볼륨 조절")
-                        .font(.headline)
-                        .foregroundColor(.white.opacity(0.8))
+                    Text("현재 트랙: \(viewModel.trackNumber)번")
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundColor(.white.opacity(0.7))
+                                .transition(.opacity.combined(with: .move(edge: .top)))
+                                .animation(.easeInOut(duration: 0.4), value: viewModel.trackNumber)
+                                
 
                     ZStack(alignment: .leading) {
                         Capsule()
