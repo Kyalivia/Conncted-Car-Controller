@@ -109,7 +109,7 @@ void handleMp3Command(char val) {
 void sendVolumeData(void) {
     
     char uartBuffer[32];
-		int len = snprintf(uartBuffer, sizeof(uartBuffer), "MP3:%d", currentVolume/5);
+		int len = snprintf(uartBuffer, sizeof(uartBuffer), "MP3:%d&%d", currentVolume/5,currentTrack);
 
     HAL_UART_Transmit(&huart1, (uint8_t*)uartBuffer, len, HAL_MAX_DELAY);
 }
