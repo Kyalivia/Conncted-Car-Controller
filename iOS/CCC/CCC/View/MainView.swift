@@ -1,15 +1,10 @@
 import SwiftUI
 
+
 struct MainView: View {
     @StateObject private var scanVM = ScanViewModel()
-    @StateObject private var connectionVM = ConnectionViewModel()
-    @State private var isBluetoothOn = false
-    @State private var selectedDevice: BLEDevice? = nil
-    @State private var showConnectAlert = false
-    @State private var isDeviceConnected = false
-    @State private var isConnecting = false
-    @Namespace private var animation
-    
+    @StateObject private var mainVM = MainViewModel()
+    let weatherViewModel = WeatherViewModel()
     var body: some View {
         NavigationStack {
             ZStack {
@@ -17,79 +12,69 @@ struct MainView: View {
                     .ignoresSafeArea()
                 
                 VStack(spacing: 30) {
-                    HStack(alignment: .top) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text("Connected Car")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .bold()
-                                    .scaleEffect(isDeviceConnected ? 1.1 : 1.0)
-                                    .opacity(isDeviceConnected ? 1 : 0.8)
-                                    .animation(.easeInOut(duration: 0.5), value: isDeviceConnected)
-                                Text("Controller")
-                                    .font(.title)
-                                    .foregroundColor(.white)
-                                    .bold()
-                                    .scaleEffect(isDeviceConnected ? 1.1 : 1.0)
-                                    .opacity(isDeviceConnected ? 1 : 0.8)
-                                    .animation(.easeInOut(duration: 0.5).delay(0.1), value: isDeviceConnected)
-                            }
+                    // 상단 텍스트
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text("Connected Car")
+                                .font(.headline)
+                                .foregroundColor(.white)
+                                .scaleEffect(mainVM.isDeviceConnected ? 1.1 : 1.0)
+                                .opacity(mainVM.isDeviceConnected ? 1 : 0.8)
+                                .animation(.easeInOut(duration: 0.5), value: mainVM.isDeviceConnected)
+
+                            Text("Controller")
+                                .font(.title)
+                                .foregroundColor(.white)
+                                .scaleEffect(mainVM.isDeviceConnected ? 1.1 : 1.0)
+                                .opacity(mainVM.isDeviceConnected ? 1 : 0.8)
+                                .animation(.easeInOut(duration: 0.5).delay(0.1), value: mainVM.isDeviceConnected)
                         }
                         .padding(.leading, 20)
-                        
                         Spacer()
                     }
+
+                    // 이미지
                     Group {
-                        if isDeviceConnected {
+                        if mainVM.isDeviceConnected {
                             Image("Gen")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 160)
-                                .padding(.horizontal)
-                                .transition(.opacity.combined(with: .scale))
                         } else {
                             Image(systemName: "car.fill")
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 160)
                                 .foregroundColor(.white)
-                                .padding(.horizontal)
-                                .transition(.opacity.combined(with: .scale))
                         }
                     }
-                    
-                    Toggle(isOn: $isBluetoothOn) {
+
+                    // 토글
+                    Toggle(isOn: $mainVM.isBluetoothOn) {
                         Text("차량 검색")
                             .font(.title2)
                             .foregroundColor(.white)
                     }
-                    .toggleStyle(SwitchToggleStyle(tint: Color.cyan))
-                    .onChange(of: isBluetoothOn) {
+                    .toggleStyle(SwitchToggleStyle(tint: .cyan))
+                    .onChange(of: mainVM.isBluetoothOn) {
                         withAnimation {
-                            if isBluetoothOn {
-                                scanVM.startScan()
-                            } else {
-                                scanVM.stopScan()
-                                connectionVM.disconnect()
-                                isDeviceConnected = false
-                                isConnecting = false
-                            }
+                            mainVM.toggleBluetooth(mainVM.isBluetoothOn)
                         }
                     }
                     .padding(.horizontal, 40)
-                    
-                    if isBluetoothOn && !isDeviceConnected && !isConnecting {
+
+                    // 기기 목록
+                    if mainVM.isBluetoothOn && !mainVM.isDeviceConnected && !mainVM.isConnecting {
                         VStack {
                             Text("기기 목록")
                                 .font(.headline)
                                 .foregroundColor(.white)
                             
                             List(scanVM.devices) { device in
-                                Button(action: {
-                                    selectedDevice = device
-                                    showConnectAlert = true
-                                }) {
+                                Button {
+                                    mainVM.selectedDevice = device
+                                    mainVM.showConnectAlert = true
+                                } label: {
                                     HStack {
                                         Image(systemName: "cpu")
                                         Text(device.name)
@@ -101,63 +86,41 @@ struct MainView: View {
                             .listStyle(.plain)
                             .frame(height: 200)
                         }
-                        .transition(.opacity.combined(with: .move(edge: .top)))
                     }
-                    
-                    if isBluetoothOn && isConnecting {
+
+                    // 연결 중 로딩
+                    if mainVM.isBluetoothOn && mainVM.isConnecting {
                         VStack {
                             ProgressView()
                                 .progressViewStyle(CircularProgressViewStyle(tint: .white))
                             Text("연결 중...")
                                 .foregroundColor(.white)
                         }
-                        .transition(.opacity.combined(with: .scale))
                     }
-                    
-                    if isBluetoothOn && isDeviceConnected {
-                        RemoteControlPanel()
+
+                    // 연결 완료 시 RemoteControlPanel 표시
+                    if mainVM.isBluetoothOn && mainVM.isDeviceConnected {
+                        RemoteControlPanel(weatherViewModel: weatherViewModel)
                             .frame(maxWidth:.infinity ,maxHeight: .infinity)
-                            .transition(.opacity.combined(with: .move(edge: .bottom)))
                     }
-                    
+
                     Spacer()
                 }
-                //.padding()
-                .alert(isPresented: $showConnectAlert) {
+                .alert(isPresented: $mainVM.showConnectAlert) {
                     Alert(
                         title: Text("기기 연결"),
                         message: Text("정말 이 기기에 연결하시겠습니까?"),
                         primaryButton: .default(Text("확인"), action: {
-                            if let device = selectedDevice {
-                                isConnecting = true
-                                scanVM.connect(to: device)
-                                
-                                let startTime = Date()
-                                Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
-                                    let elapsed = Date().timeIntervalSince(startTime)
-                                    if connectionVM.isConnected && elapsed >= 1.0 {
-                                        timer.invalidate()
-                                        withAnimation {
-                                            isDeviceConnected = true
-                                            isConnecting = false
-                                        }
-                                    } else if elapsed >= 5.0 { // 최대 대기 시간 초과
-                                        timer.invalidate()
-                                        withAnimation {
-                                            isConnecting = false
-                                        }
-                                    }
-                                }
-                            }
+                            mainVM.connectToDevice()
                         }),
                         secondaryButton: .cancel()
                     )
                 }
             }
         }
+        .onAppear{
+            weatherViewModel.fetchWeather()
+        }
     }
 }
-
-
-
 

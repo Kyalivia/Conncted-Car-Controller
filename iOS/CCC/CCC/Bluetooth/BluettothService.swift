@@ -25,15 +25,19 @@ final class BluetoothService: NSObject, ObservableObject {
     // 구독해야하는 수신 데이터들
     @Published var receivedTemperature: String = "--"
     @Published var ledStatus: Bool = false
-
+    @Published var isTempNotifyReady = false
+    @Published var receivedMP3Data: String = ""
+    @Published var searchResultResponse: String = ""
+    @Published var receivedFANData: String = ""
+    
     
     private override init() {
         super.init()
         centralManager = CBCentralManager(delegate: self, queue: nil)
     }
-
+    
     // MARK: - Public Methods
-
+    
     func startScanning() {
         guard isBluetoothOn else {
             print("⚠️ 블루투스 꺼져 있음")
@@ -73,10 +77,10 @@ final class BluetoothService: NSObject, ObservableObject {
             print("⚠️ peripheral이 nil 상태")
             return
         }
-
+        
         let data = command.data(using: .utf8)!
         let uuid = CBUUID(string: characteristicUUID)
-
+        
         for service in peripheral.services ?? [] {
             for characteristic in service.characteristics ?? [] {
                 if characteristic.uuid == uuid {
@@ -86,10 +90,10 @@ final class BluetoothService: NSObject, ObservableObject {
                 }
             }
         }
-
+        
         print("🚨 특성 \(characteristicUUID) 찾지 못함")
     }
-
+    
 }
 
 
@@ -128,6 +132,8 @@ extension BluetoothService: CBCentralManagerDelegate {
         print("🔴 연결 해제됨")
         isConnected = false
         connectedDeviceName = nil
+        discoveredDevices.removeAll()
+        self.startScanning()
         self.peripheral = nil
     }
 }
@@ -157,26 +163,43 @@ extension BluetoothService: CBPeripheralDelegate {
             print("🚨 특성 검색 실패: \(error.localizedDescription)")
             return
         }
-
+        
         for characteristic in service.characteristics ?? [] {
             peripheral.setNotifyValue(true, for: characteristic)
             print("✅ \(characteristic.uuid) Notify 등록 완료")
+            if self.isTempNotifyReady == false && characteristic.uuid == CBUUID(string: Constants.tempCharacteristicUUID) {
+                DispatchQueue.main.async {
+                    self.isTempNotifyReady = true
+                }
+            }
         }
     }
     
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
         guard let value = characteristic.value,
               let message = String(data: value, encoding: .utf8) else { return }
-
+        
         print("📡 수신 데이터: \(message)")
-
+        
         if message.hasPrefix("TEM:") {
             let tempValue = message.replacingOccurrences(of: "TEM:", with: "")
             DispatchQueue.main.async {
                 self.receivedTemperature = tempValue
             }
+        } else if message.hasPrefix("MP3:") {
+            DispatchQueue.main.async {
+                self.receivedMP3Data = message
+            }
+        } else if message.hasPrefix("NAV:") {
+            DispatchQueue.main.async {
+                self.searchResultResponse = message
+            }
+        } else if message.hasPrefix("FAN:") {
+            DispatchQueue.main.async {
+                self.receivedFANData = message
+            }
         }
         // LED, NAV 등의 분기는 위에 계속 추가
     }
-
+    
 }

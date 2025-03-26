@@ -10,9 +10,22 @@
 		4632B6FC2D8E877E007EBC02 /* CCC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CCC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		466BB8C22D92624300E45C96 /* Exceptions for "CCC" folder in "CCC" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 4632B6FB2D8E877E007EBC02 /* CCC */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		4632B6FE2D8E877E007EBC02 /* CCC */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				466BB8C22D92624300E45C96 /* Exceptions for "CCC" folder in "CCC" target */,
+			);
 			path = CCC;
 			sourceTree = "<group>";
 		};
@@ -255,8 +268,10 @@
 				DEVELOPMENT_TEAM = U3XKZ56Z4Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CCC/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "";
-				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "$(PRODUCT_NAME)";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = CCC;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -286,8 +301,10 @@
 				DEVELOPMENT_TEAM = U3XKZ56Z4Q;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = CCC/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSBluetoothAlwaysUsageDescription = "";
-				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = "$(PRODUCT_NAME)";
+				INFOPLIST_KEY_NSBluetoothPeripheralUsageDescription = CCC;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

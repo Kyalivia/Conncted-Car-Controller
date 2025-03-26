@@ -1,4 +1,6 @@
 import Foundation
+import SwiftUI
+import Combine
 
 class FanViewModel: ObservableObject {
     @Published var currentFanLevel: FanLevel = .off
@@ -7,6 +9,7 @@ class FanViewModel: ObservableObject {
     
     private var timer: Timer?
     private var rotationIncrement: Double = 0
+    private var cancellables = Set<AnyCancellable>()
     
     enum FanLevel: String, CaseIterable {
         case off = "0"
@@ -38,6 +41,8 @@ class FanViewModel: ObservableObject {
     }
     
     init() {
+        observeFanLevelUpdates()
+        requestCurrentFanState()
         startFanRotationTimer()
     }
     
@@ -68,6 +73,44 @@ class FanViewModel: ObservableObject {
             }
         }
     }
+    
+    func requestCurrentFanState() {
+            // STM에 현재 상태 요청
+            BluetoothService.shared.sendCommand(command: "FAN:s", characteristicUUID: Constants.fanCharacteristicUUID)
+    }
+    
+    private func observeFanLevelUpdates() {
+        BluetoothService.shared.$receivedFANData
+            .filter { !$0.isEmpty }
+            .map { fanString in
+                return String(fanString.dropFirst(4)) // "FAN:x" → "x"
+            }
+            .sink { [weak self] value in
+                self?.updateFanLevelFromReceived(value)
+            }
+            .store(in: &cancellables)
+    }
+    
+    func updateFanLevelFromReceived(_ value: String) {
+        if let level = FanLevel(rawValue: value) {
+            currentFanLevel = level
+            print("팬 레벨 수신: \(level)")
+            sliderValue = Double(FanLevel.allCases.firstIndex(of: level) ?? 0)
+            
+            // 회전 속도도 같이 반영해야 하므로 rotationIncrement도 직접 설정
+            switch level {
+            case .off: rotationIncrement = 0
+            case .level1: rotationIncrement = 1.0
+            case .level2: rotationIncrement = 2.5
+            case .level3: rotationIncrement = 4.0
+            }
+        } else {
+            print("⚠️ 잘못된 팬 레벨 수신: \(value)")
+        }
+    }
+
+
+
     
     deinit {
         timer?.invalidate()
