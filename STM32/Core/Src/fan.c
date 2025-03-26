@@ -35,14 +35,15 @@ void fanStatusPrint(int fan_count)
 	}
 }
 
-void fanSet(uint8_t fan_count) {
+char fanSet(uint8_t fan_count) {
     fanAll(FAN_OFF);
 	
 		if (fan_count >= 1) fanControl(FAN1_GPIO_Port, FAN1_Pin, FAN_ON);
     if (fan_count >= 2) fanControl(FAN2_GPIO_Port, FAN2_Pin, FAN_ON);
     if (fan_count >= 3) fanControl(FAN3_GPIO_Port, FAN3_Pin, FAN_ON);
 	
-		fanStatusPrint(fan_count);        
+		fanStatusPrint(fan_count);     
+		return fan_count == 1 ? 'a' : fan_count == 2 ? 'b' : fan_count == 0 ? '0' : 'c';
 }
 
 void fanAll(FanState state) 

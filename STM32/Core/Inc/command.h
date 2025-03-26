@@ -16,5 +16,6 @@ void parseCommand(char *rxBuffer);
 void handleFanCommand(char val);
 void handleMp3Command(char val);
 void handleNavCommand(char val);
+void sendVolumeData(void);
 
 #endif 
