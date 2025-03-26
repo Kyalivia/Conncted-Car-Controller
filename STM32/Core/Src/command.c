@@ -11,6 +11,7 @@ extern uint8_t mp3StopFlag;
 extern char navBuffer[NAV_BUFFER_SIZE];
 extern uint8_t navIndex;
 extern uint8_t nav_input_mode;
+uint8_t fanState;
 
 extern UART_HandleTypeDef huart1;
 
@@ -49,22 +50,28 @@ void handleTemperatureCommand(void) {
 
 // Fan Control Command
 void handleFanCommand(char val) {
+		char uartBuffer[32];
+		int len;
     switch (val) {
     // Fan Off
     case '0':
-        fanSet(0);
+        fanState = fanSet(0);
         break;
 
     // Fan Strength Control
     case 'a':
-        fanSet(1);
+        fanState = fanSet(1);
         break;
     case 'b':
-        fanSet(2);
+        fanState = fanSet(2);
 				break;
     case 'c':
-        fanSet(3);
+        fanState = fanSet(3);
         break;
+		case 's':
+			len = snprintf(uartBuffer, sizeof(uartBuffer), "FAN:%c", fanState);
+			HAL_UART_Transmit(&huart1, (uint8_t*)uartBuffer, len, HAL_MAX_DELAY);
+			break;
     }
 }
 
@@ -93,13 +100,26 @@ void handleMp3Command(char val) {
         break;
     case 'p': // Previous Track
         mp3Previous();
+		case 's':
+				sendVolumeData();
         break;
     }
+}
+
+void sendVolumeData(void) {
+    
+    char uartBuffer[32];
+		int len = snprintf(uartBuffer, sizeof(uartBuffer), "MP3:%d", currentVolume/5);
+
+    HAL_UART_Transmit(&huart1, (uint8_t*)uartBuffer, len, HAL_MAX_DELAY);
 }
 
 
 // Navigation Control Command
 void handleNavCommand(char val) {
+		char uartBuffer[32];
+		int len;
+	
     if (val == '1') {
         nav_input_mode = 1;      // Input Mode Start
         navIndex = 0;            // Buffer Reset
@@ -109,6 +129,14 @@ void handleNavCommand(char val) {
         nav_input_mode = 0;      // Finish Input
         navBuffer[navIndex] = '\0';  // End Letter Null
 				findLocation(navBuffer);
+				if (findLocation(navBuffer) == 1) {
+					len = snprintf(uartBuffer, sizeof(uartBuffer), "NAV:OK=%s",navBuffer);
+				}
+				else {
+					len = snprintf(uartBuffer, sizeof(uartBuffer), "NAV:FAIL");
+				}
+				HAL_UART_Transmit(&huart1, (uint8_t*)uartBuffer, len, HAL_MAX_DELAY);
+			
     }
     else if (nav_input_mode && navIndex < NAV_BUFFER_SIZE - 1) {
         // a~z Input

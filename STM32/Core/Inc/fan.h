@@ -14,7 +14,7 @@ typedef enum {
 
 void fanInit(void);                  
 void fanControl(GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin, FanState state);
-void fanSet(uint8_t fan_count); 
+char fanSet(uint8_t fan_count); 
 void fanAll(FanState state);
 
 #endif /* FAN_H */
