@@ -5,7 +5,7 @@
 #include <string.h>
 #include "lcd.h"
 
-void findLocation(char *input);
+int findLocation(char *input);
 void findLocationPrint();
 
 #endif 

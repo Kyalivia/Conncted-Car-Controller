@@ -32,7 +32,7 @@ int checkSD(char *input)
 				lcdSetCursor(1, 0);
 				sprintf(str2, "%d%c, %d%c", lat, lat_dir, lon, lon_dir);
 				lcdSendString(str2);
-				HAL_Delay(1000);
+				// HAL_Delay(1000);
 				return(1);
 			}
 		}
@@ -41,14 +41,16 @@ int checkSD(char *input)
 	return (0);
 }
 
-void findLocation(char *input)
+int findLocation(char *input)
 {
 	if (!checkSD(input))
 	{
 		lcdClearDisplay();
 		lcdSetCursor(0, 0);
 		lcdSendString("Not Found");
+		return 0;
 	}
+	return 1;
 }
 
 

@@ -112,6 +112,7 @@ void mp3DecreaseVolume(void) {
 	}
 }
 
+
 // DFPlayer Mini Reset
 void mp3DfplayerInit(void) {
   mp3SendCommand(0x3F, 0x00, 0x00);
@@ -138,4 +139,8 @@ uint8_t mp3GetRandomTrack(void) {
 // System Time
 void mp3InitRandomSeed(void) {
     srand(HAL_GetTick());
+}
+
+int mp3GetVolume() {
+	return currentVolume;
 }
