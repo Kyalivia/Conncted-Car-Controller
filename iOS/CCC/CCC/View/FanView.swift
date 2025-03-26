@@ -21,6 +21,9 @@ struct FanView: View {
             Text("현재 단계: \(viewModel.currentFanLevel.description)")
                 .foregroundColor(.white)
         }
+        .onAppear{
+            viewModel.requestCurrentFanState()
+        }
         .padding()
     }
 }

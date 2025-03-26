@@ -4,44 +4,64 @@ struct MP3View: View {
     @ObservedObject var viewModel: MP3ViewModel
     
     var body: some View {
-        HStack(spacing: 40) {
-            VStack {
-                Button(action: { viewModel.sendCommand(.volumeUp) }) {
-                    Image(systemName: "speaker.wave.3.fill")
-                        .resizable()
-                        .frame(width: 28, height: 28)
-                        .padding()
-                        .background(Color.cyan.opacity(0.2))
-                        .clipShape(Circle())
-                        .foregroundColor(.white)
+        VStack(spacing: 24) {
+
+            // 🎯 볼륨 슬라이더 - 애니메이션 등장
+            if viewModel.isPlaying {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("볼륨 조절")
+                        .font(.headline)
+                        .foregroundColor(.white.opacity(0.8))
+
+                    ZStack(alignment: .leading) {
+                        Capsule()
+                            .fill(Color.white.opacity(0.15))
+                            .frame(height: 20)
+
+                        Capsule()
+                            .fill(Color.cyan)
+                            .frame(width: CGFloat(viewModel.volumeLevel) / 7.0 * 300, height: 20)
+                            .animation(.easeInOut(duration: 0.3), value: viewModel.volumeLevel)
+                    }
+                    .frame(width: 300)
+
+                    Text("\(viewModel.volumeLevel) / 7")
+                        .font(.caption)
+                        .bold()
+                        .foregroundColor(.cyan)
                 }
-                Text("볼륨 +")
-                    .font(.caption)
-                    .foregroundColor(.white)
-            }
-            
-            Button(action: { viewModel.sendCommand(.random) }) {
-                Image(systemName: MP3ViewModel.MP3Command.random.systemImage)
-                    .resizable()
-                    .frame(width: 24, height: 24)
-                    .foregroundColor(.white)
+                .padding(.top, 10)
+                .padding(.bottom, 5)
+                .transition(.move(edge: .bottom).combined(with: .opacity)) // ⬅️ 자연스러운 이동 + 페이드 효과
+                .animation(.easeInOut(duration: 0.5), value: viewModel.isPlaying)
             }
 
-            VStack {
-                Button(action: { viewModel.sendCommand(.volumeDown) }) {
-                    Image(systemName: "speaker.wave.1.fill")
-                        .resizable()
-                        .frame(width: 28, height: 28)
-                        .padding()
-                        .background(Color.cyan.opacity(0.2))
-                        .clipShape(Circle())
-                        .foregroundColor(.white)
+            // 🔘 볼륨 조절 버튼들
+            if viewModel.isPlaying {
+                HStack(spacing: 40) {
+                    volumeButton(
+                        image: "speaker.wave.1.fill",
+                        label: "볼륨 -",
+                        action: { viewModel.sendCommand(.volumeDown) }
+                    )
+
+                    volumeButton(
+                        image: "shuffle",
+                        label: "랜덤",
+                        action: { viewModel.sendCommand(.random) }
+                    )
+
+                    volumeButton(
+                        image: "speaker.wave.3.fill",
+                        label: "볼륨 +",
+                        action: { viewModel.sendCommand(.volumeUp) }
+                    )
                 }
-                Text("볼륨 -")
-                    .font(.caption)
-                    .foregroundColor(.white)
+                .transition(.opacity.combined(with: .scale)) // ⬅️ 버튼들도 자연스럽게 등장
+                .animation(.easeInOut(duration: 0.4), value: viewModel.isPlaying)
             }
         }
+
         
         // 중앙: MP3 제어 버튼
         HStack(spacing: 60) {
@@ -53,7 +73,9 @@ struct MP3View: View {
             }
             
             Button(action: {
-                viewModel.sendCommand(viewModel.isPlaying ? .stop : .play)
+                withAnimation { // ✅ 뷰 전환 애니메이션
+                        viewModel.sendCommand(viewModel.isPlaying ? .stop : .play)
+                }
             }) {
                 ZStack {
                     Circle()
@@ -76,5 +98,32 @@ struct MP3View: View {
             }
             
         }
+        .padding(.bottom,20)
     }
 }
+
+
+@ViewBuilder
+func volumeButton(image: String, label: String, action: @escaping () -> Void) -> some View {
+    Button(action: action) {
+        VStack(spacing: 6) {
+            Image(systemName: image)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 28, height: 28)
+                .padding(12)
+                .background(
+                    Circle()
+                        .fill(Color.white.opacity(0.1))
+                        .shadow(color: .cyan.opacity(0.4), radius: 8, x: 0, y: 4)
+                )
+                .foregroundColor(.white)
+
+            Text(label)
+                .font(.caption)
+                .foregroundColor(.white.opacity(0.85))
+        }
+    }
+    .buttonStyle(PlainButtonStyle())
+}
+

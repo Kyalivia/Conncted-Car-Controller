@@ -7,20 +7,30 @@ struct SearchView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Button(action: {
-                withAnimation {
-                    viewModel.startSearch()
+                    if let message = viewModel.searchResultMessage {
+                        Text(message)
+                            .font(.callout)
+                            .foregroundColor(message.contains("다시") ? .red : .white)
+                            .bold()
+                            .multilineTextAlignment(.center)
+                    }
+
+                    Button(action: {
+                        withAnimation {
+                            viewModel.startSearch()
+                        }
+                    }) {
+                        Text("검색 시작")
+                            .font(.headline)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.cyan)
+                            .foregroundColor(.black)
+                            .cornerRadius(12)
+                    }
+                    .padding(.horizontal)
                 }
-            }) {
-                Text("검색 시작")
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.cyan)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
-            }
-            .padding(.horizontal)
-        }
+        .padding()
         .sheet(isPresented: $viewModel.isSearchSheetPresented) {
             VStack(spacing: 24) {
                 Text("주소를 입력해주세요")
@@ -51,8 +61,7 @@ struct SearchView: View {
                     }
                     
                     Button(action: {
-                        //viewModel.endSearch()
-                        isTextFieldFocused = false
+                        viewModel.isSearchSheetPresented = false
                     }) {
                         Text("취소")
                             .fontWeight(.semibold)

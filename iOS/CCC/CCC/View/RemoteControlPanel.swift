@@ -6,6 +6,7 @@ struct RemoteControlPanel: View {
     let mp3ViewModel = MP3ViewModel()
     let serachViewModel = SearchViewModel()
     let tempViewModel = TemperatureViewModel()
+    @ObservedObject var weatherViewModel: WeatherViewModel
     
     var body: some View {
         VStack(spacing: 20) {
@@ -23,9 +24,6 @@ struct RemoteControlPanel: View {
                 TabButton(title: "검색", icon: "magnifyingglass", isSelected: selectedTab == 3) {
                     selectedTab = 3
                 }
-                TabButton(title: "테스트", icon: "magnifyingglass", isSelected: selectedTab == 4) {
-                    selectedTab = 4
-                }
             }
 
             .padding(.horizontal)
@@ -36,15 +34,14 @@ struct RemoteControlPanel: View {
                     Spacer(minLength: 0)
                     switch selectedTab {
                     case 0:
-                        TemperatureView(viewModel: tempViewModel)
+                        TemperatureView(viewModel: tempViewModel, weatherViewModel: weatherViewModel)
                     case 1:
                         FanView(viewModel: fanViewModel)
                     case 2:
                         MP3View(viewModel: mp3ViewModel)
                     case 3:
                         SearchView(viewModel: serachViewModel)
-                    case 4:
-                        LEDView()
+
                     default:
                         EmptyView()
                     }
@@ -52,6 +49,7 @@ struct RemoteControlPanel: View {
                 }
             }
         }
+        
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .cornerRadius(16)
         .padding(.horizontal)
