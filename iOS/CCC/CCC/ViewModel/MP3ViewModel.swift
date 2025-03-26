@@ -3,14 +3,15 @@ import Combine
 
 class MP3ViewModel: ObservableObject {
     @Published var isPlaying: Bool = false
-    @Published var volumeLevel: Int = 0  // 🔊 0 ~ 6 단계
-    
+    @Published var volumeLevel: Int = 0      // 🔊 0 ~ 6 단계
+    @Published var trackNumber: Int = 1      // 🎵 현재 트랙 번호
+
     private var cancellables = Set<AnyCancellable>()
-    
+
     init() {
-        observeVolumeData()
+        observeMP3Data()
     }
-    
+
     enum MP3Command: String, CaseIterable {
         case play = "1"
         case stop = "0"
@@ -34,45 +35,59 @@ class MP3ViewModel: ObservableObject {
             }
         }
     }
-    
+
     func sendCommand(_ command: MP3Command) {
         let formatted = "MP3:\(command.rawValue)"
         BluetoothService.shared.sendCommand(command: formatted, characteristicUUID: Constants.mp3CharacteristicUUID)
-        
+
         switch command {
         case .play:
             isPlaying = true
-            requestVolume() // 🔸 플레이 시 최초 1회 요청
+            requestVolume()
         case .stop:
             isPlaying = false
-            volumeLevel = 0 // 🔸 정지 시 리셋
+            volumeLevel = 0
         case .volumeUp:
-            if isPlaying && volumeLevel < 7 {
+            if isPlaying && volumeLevel < 6 {
                 volumeLevel += 1
             }
         case .volumeDown:
             if isPlaying && volumeLevel > 0 {
                 volumeLevel -= 1
             }
+        case .next:
+            requestVolume()
+        case .previous:
+            requestVolume()
+        case .random:
+            requestVolume()
+            
         default:
             break
         }
     }
-    
+
     private func requestVolume() {
-           sendCommand(.getVolume)  // MP3:S 명령 전송
-       }
-    
-    private func observeVolumeData() {
+        sendCommand(.getVolume)
+    }
+
+    private func observeMP3Data() {
         BluetoothService.shared.$receivedMP3Data
             .receive(on: DispatchQueue.main)
             .sink { [weak self] message in
                 guard let self = self else { return }
-                if message.hasPrefix("MP3:") {
-                    let value = message.replacingOccurrences(of: "MP3:", with: "")
-                    if let intVal = Int(value), (0...6).contains(intVal) {
-                        self.volumeLevel = intVal
-                    }
+                guard message.hasPrefix("MP3:") else { return }
+
+                let payload = message.replacingOccurrences(of: "MP3:", with: "")
+                let parts = payload.components(separatedBy: "&")
+
+                if parts.count == 2,
+                   let vol = Int(parts[0]),
+                   let track = Int(parts[1]),
+                   (0...6).contains(vol) {
+
+                    self.volumeLevel = vol
+                    self.trackNumber = track
                 }
             }
             .store(in: &cancellables)
