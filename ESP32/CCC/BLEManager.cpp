@@ -18,7 +18,7 @@ class MyCharacteristicCallbacks : public BLECharacteristicCallbacks {
 };
 
 void BLEManager::init() {
-    BLEDevice::init("ESP32-BLE-WoonKwan");
+    BLEDevice::init("1조의 GV70");
     BLEDevice::getAdvertising()->stop();
     pServer = BLEDevice::createServer();
 
